@@ -1,0 +1,395 @@
+:root {
+  --bg-color: #0b0d13;
+  --surface-color: #161922;
+  --surface-border: #262a36;
+  --surface-hover: #222634;
+  --text-main: #f0f2f7;
+  --text-muted: #8e95a5;
+  --accent-color: #4f80ff;
+  --accent-hover: #3d6de6;
+  --hud-radius: 10px;
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  font-family: var(--font-stack);
+  color: var(--text-main);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-color);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 32px;
+  border-radius: var(--hud-radius);
+}
+
+.loading-text {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.loading-bar-track {
+  width: 240px;
+  height: 6px;
+  background-color: #1a1e2b;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  width: 0%;
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: 3px;
+  transition: width 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.loading-percent {
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--text-muted);
+}
+
+/* Main Viewport */
+#openseadragon-view {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+}
+
+/* Header bar */
+.top-bar {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.brand {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(18, 21, 29, 0.88);
+  border: 1px solid var(--surface-border);
+  padding: 8px 14px;
+  border-radius: var(--hud-radius);
+  backdrop-filter: blur(10px);
+}
+
+.brand-stats {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+/* Floating HUD Controls */
+.hud-controls {
+  position: absolute;
+  bottom: max(24px, calc(12px + env(safe-area-inset-bottom)));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 21, 29, 0.92);
+  border: 1px solid var(--surface-border);
+  padding: 6px;
+  border-radius: var(--hud-radius);
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.hud-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  touch-action: manipulation;
+}
+
+.hud-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--surface-border);
+}
+
+.hud-btn:active {
+  transform: scale(0.95);
+  background: var(--surface-hover);
+}
+
+.hud-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.hud-divider {
+  width: 1px;
+  height: 22px;
+  background-color: var(--surface-border);
+  margin: 0 3px;
+}
+
+/* Navigator Minimap Container */
+.navigator-wrapper {
+  position: absolute;
+  bottom: max(24px, calc(12px + env(safe-area-inset-bottom)));
+  right: max(20px, env(safe-area-inset-right));
+  width: 130px;
+  height: 180px;
+  background: rgba(14, 17, 24, 0.92);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--hud-radius);
+  overflow: hidden;
+  z-index: 15;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#navigator-view {
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating Inspector Card */
+.inspector-card {
+  position: absolute;
+  top: 72px;
+  right: max(20px, env(safe-area-inset-right));
+  width: 280px;
+  background: rgba(22, 25, 34, 0.96);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--hud-radius);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInDesktop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInDesktop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.inspector-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.inspector-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.inspector-close:hover {
+  color: var(--text-main);
+  background: var(--surface-hover);
+}
+
+.inspector-image-wrap {
+  width: 100%;
+  height: 200px;
+  background: #08090d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.inspector-image-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.inspector-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inspector-filename {
+  font-size: 12px;
+  word-break: break-all;
+  color: var(--text-main);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.4;
+}
+
+.inspector-pos {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Bottom interaction hint */
+.interaction-hint {
+  position: absolute;
+  bottom: max(80px, calc(68px + env(safe-area-inset-bottom)));
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14, 17, 24, 0.88);
+  border: 1px solid var(--surface-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 15;
+  transition: opacity 0.5s ease;
+  white-space: nowrap;
+}
+
+.interaction-hint.fade-out {
+  opacity: 0;
+}
+
+/* Mobile Responsive Optimization */
+@media (max-width: 640px) {
+  .top-bar {
+    top: max(10px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+  }
+
+  .brand {
+    padding: 6px 12px;
+  }
+
+  .brand-stats {
+    font-size: 12px;
+  }
+
+  .hud-controls {
+    bottom: max(16px, calc(8px + env(safe-area-inset-bottom)));
+    padding: 5px;
+    gap: 4px;
+  }
+
+  .hud-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .navigator-wrapper {
+    display: none;
+    bottom: max(76px, calc(68px + env(safe-area-inset-bottom)));
+    right: max(12px, env(safe-area-inset-right));
+    width: 100px;
+    height: 140px;
+  }
+
+  .navigator-wrapper.mobile-visible {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Bottom sheet style for Inspector on mobile */
+  .inspector-card {
+    top: auto;
+    bottom: max(16px, calc(8px + env(safe-area-inset-bottom)));
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    width: auto;
+    max-height: 80vh;
+    animation: slideUpMobile 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .inspector-image-wrap {
+    height: 180px;
+  }
+
+  .interaction-hint {
+    display: none;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "target_path": "source/target.png",
+  "photos_dir": "source/photos",
+  "output_dir": "output",
+  "cache_dir": "cache",
+  "grid": {
+    "columns": 60,
+    "rows": null,
+    "cell_aspect_ratio": 1.0,
+    "tile_render_size": 120
+  },
+  "matching": {
+    "color_space": "lab",
+    "use_quadrants": true,
+    "quadrant_weight": 0.35,
+    "luminance_weight": 1.2,
+    "avoid_neighbor_radius": 2,
+    "neighbor_penalty": 30.0,
+    "max_repeat_factor": 1.8,
+    "random_top_k": 3,
+    "color_blend_ratio": 0.08,
+    "skip_transparent": false,
+    "alpha_threshold": 128,
+    "unique_only": false
+  },
+  "output": {
+    "format": "jpg",
+    "quality": 92,
+    "generate_dzi": true,
+    "dzi_tile_size": 256,
+    "dzi_overlap": 1
+  }
+}
